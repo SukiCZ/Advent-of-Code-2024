@@ -1,5 +1,5 @@
 INPUT_FILE = "input.txt"  # Path to the input file
-WORD = "XMAS"
+WORD = "XMAS"  # Word to search in the grid
 # Define the 8 possible directions (dx, dy)
 DIRECTIONS = [
     (0, 1),  # right
@@ -10,6 +10,14 @@ DIRECTIONS = [
     (1, -1),  # down-left
     (-1, 1),  # up-right
     (-1, -1),  # up-left
+]
+PATTERN = "MAS"
+PATTERN_LEN = len(PATTERN)
+PATTERNS = [
+    [("M", -1, -1), ("S", -1, 1), ("A", 0, 0), ("M", 1, -1), ("S", 1, 1)],  # Original
+    [("S", -1, -1), ("M", 1, -1), ("A", 0, 0), ("S", -1, 1), ("M", 1, 1)],  # + 90
+    [("S", 1, -1), ("M", 1, 1), ("A", 0, 0), ("S", -1, -1), ("M", -1, 1)],  # + 180
+    [("M", -1, 1), ("S", 1, 1), ("A", 0, 0), ("M", -1, -1), ("S", 1, -1)],  # + 270
 ]
 
 
@@ -50,7 +58,33 @@ def search_word(grid, word):
     return count
 
 
+def search_pattern(grid, i, j, pattern):
+    # Search for the pattern in the grid
+    n, m = len(grid), len(grid[0])
+    for char, dx, dy in pattern:
+        new_i, new_j = i + dx, j + dy
+        if not is_valid(new_i, new_j, n, m) or grid[new_i][new_j] != char:
+            return False
+    return True
+
+
+def search_x_mas(grid):
+    # Search for the X-MAS pattern in the grid
+    n, m = len(grid), len(grid[0])
+    count = 0
+
+    for i in range(n):
+        for j in range(m):
+            for pattern in PATTERNS:
+                if search_pattern(grid, i, j, pattern):
+                    count += 1
+
+    return count
+
+
 if __name__ == "__main__":
     grid = read_grid(INPUT_FILE)
     occurrences = search_word(grid, WORD)
     print(f"The word '{WORD}' appears {occurrences} times in the grid.")  # 2454
+    occurrences = search_x_mas(grid)
+    print(f"The X-MAS pattern appears {occurrences} times in the grid.")  # 1858
