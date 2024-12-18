@@ -61,11 +61,43 @@ def validate_updates(
     return get_middle(left)
 
 
+def fix_update(
+    update: [list[int]], to_right: dict[int, list[int]], to_left: [int, list[int]]
+) -> int:
+    """
+    Fix update in order to_right and to_left
+    :param update: [3, 1, 5]
+    :param to_right: {1: [3, 5], 3: [5], 5: []}
+    :param to_left: {3: [1], 5: [1, 3]}
+    :return: 3 (middle element of valid update) or None (invalid update)
+    """
+    left = []
+    right = update
+    while right:
+        i = right.pop(0)
+        for idx, j in enumerate(right):
+            if j in to_left[i]:
+                left.append(i)
+                break
+        else:
+            for idx, j in enumerate(left):
+                if j in to_right[i]:
+                    left.insert(idx, i)
+                    break
+            else:
+                left.append(i)
+    return get_middle(left)
+
+
 if __name__ == "__main__":
     to_right, to_left, updates = read_input(INPUT)
     result = 0
+    result_part_2 = 0
     for update in updates:
-        middle = validate_updates(update, to_right, to_left)
+        middle = validate_updates(update.copy(), to_right, to_left)
         if middle is not None:
             result += middle
+        else:
+            result_part_2 += fix_update(update.copy(), to_right, to_left), to_right, to_left
     print(f"Result: {result}")  # 6498
+    print(f"Result part 2: {result_part_2}")  # 5017
