@@ -144,7 +144,10 @@ class World:
             # Get position ahead
 
             # Turn if there is an obstacle or the position ahead is the obstacle
-            while Obstacle(*self.guard.position_ahead()) in self.obstacles or self.guard.position_ahead() == obstacle:
+            while (
+                Obstacle(*self.guard.position_ahead()) in self.obstacles
+                or self.guard.position_ahead() == obstacle
+            ):
                 self.guard.turn()
 
             # If the position ahead and the direction is in the states, there is a loop
@@ -155,7 +158,6 @@ class World:
             self.walk(add_visit=False)
 
         return False
-
 
     def check_obstacles(self) -> int:
         """

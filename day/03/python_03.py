@@ -2,7 +2,9 @@ import re
 
 
 INPUT_FILE = "input.txt"
-REGEX = re.compile(r"mul\((?P<left>[0-9]{1,3}),(?P<right>[0-9]{1,3})\)")  # mul(123,456) -> left=123, right=456
+REGEX = re.compile(
+    r"mul\((?P<left>[0-9]{1,3}),(?P<right>[0-9]{1,3})\)"
+)  # mul(123,456) -> left=123, right=456
 
 
 def read_lines():
@@ -46,4 +48,6 @@ if __name__ == "__main__":
     mul_calls = sum_multiplication_calls(lines)
     print(f"Sum of 'mul' calls: {mul_calls}")  # 164730528
     mul_calls_with_do_dont = part_two(lines)
-    print(f"Sum of 'mul' calls with 'do()' and 'don't()': {mul_calls_with_do_dont}")  # 70478672
+    print(
+        f"Sum of 'mul' calls with 'do()' and 'don't()': {mul_calls_with_do_dont}"
+    )  # 70478672

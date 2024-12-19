@@ -92,12 +92,12 @@ def fix_update(
 if __name__ == "__main__":
     to_right, to_left, updates = read_input(INPUT)
     result = 0
-    result_part_2 = 0
+    result_2 = 0
     for update in updates:
         middle = validate_updates(update.copy(), to_right, to_left)
         if middle is not None:
             result += middle
         else:
-            result_part_2 += fix_update(update.copy(), to_right, to_left), to_right, to_left
+            result_2 += fix_update(update.copy(), to_right, to_left), to_right, to_left
     print(f"Result: {result}")  # 6498
-    print(f"Result part 2: {result_part_2}")  # 5017
+    print(f"Result part 2: {result_2}")  # 5017
