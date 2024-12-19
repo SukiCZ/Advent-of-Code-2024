@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=75.6.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "advent-of-code-24"
+version = "0.1.0"
+description = "Solutions for Advent of code 2024"
+authors = [
+    { name = "Jakub Boukal", email = "www.bagr@gmail.com" }
+]
+requires-python = ">=3.12"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=4.0.1"
+]
