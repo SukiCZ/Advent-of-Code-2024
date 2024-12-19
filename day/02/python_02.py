@@ -2,12 +2,11 @@ INPUT_FILE = "input.txt"
 
 
 def read_lines():
-    with open(INPUT_FILE, "r") as file:
-        for line in file:
-            yield line
+    with open(INPUT_FILE) as file:
+        yield from file
 
 
-def is_increasing_or_decreasing(reports: [int], allowed_fails: int = 0) -> bool:
+def is_increasing_or_decreasing(reports: list[int], allowed_fails: int = 0) -> bool:
     # Check if the reports are increasing or decreasing
     direction = None
     fails = 0

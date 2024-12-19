@@ -1,6 +1,5 @@
 import re
 
-
 INPUT_FILE = "input.txt"
 REGEX = re.compile(
     r"mul\((?P<left>[0-9]{1,3}),(?P<right>[0-9]{1,3})\)"
@@ -8,9 +7,8 @@ REGEX = re.compile(
 
 
 def read_lines():
-    with open(INPUT_FILE, "r") as file:
-        for line in file:
-            yield line
+    with open(INPUT_FILE) as file:
+        yield from file
 
 
 def sum_line(line):

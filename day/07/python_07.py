@@ -1,8 +1,10 @@
+from collections.abc import Generator
+
 INPUT = "input.txt"
 # INPUT = "input_small.txt"
 
 
-def get_input() -> tuple[int, list[int]]:
+def get_input() -> Generator[tuple[int, list[int]]]:
     """
     Get input from file
 
@@ -16,9 +18,11 @@ def get_input() -> tuple[int, list[int]]:
     """
     with open(INPUT) as file:
         for line in file.read().splitlines():
-            test_value, numbers = line.split(":")
-            test_value = int(test_value)
-            numbers = list(map(int, numbers.split()))
+            test_value: int
+            numbers: list[int]
+            test_value_str, numbers_str = line.split(":")
+            test_value = int(test_value_str)
+            numbers = list(map(int, numbers_str.split()))
             yield test_value, numbers
 
 

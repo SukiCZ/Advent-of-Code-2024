@@ -87,9 +87,9 @@ class World:
         Constructor for the World class.
         :param data: List of strings representing the world.
         """
+        self.guard: Guard
         self.height: int = len(data)
         self.width: int = len(data[0])
-        self.guard: Guard | None = None
         self.start: tuple[int, int] = (0, 0)
         self.obstacles: set = set()
         self.visited: set = set()
@@ -203,7 +203,7 @@ class World:
 
 
 def main():
-    with open(INPUT, "r") as f:
+    with open(INPUT) as f:
         data = f.read().splitlines()
 
     world = World(data)

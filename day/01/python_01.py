@@ -1,11 +1,10 @@
 from collections import defaultdict
 
-
 INPUT_FILE = "input.txt"
 
 
-def read_lists() -> (list, list):
-    with open(INPUT_FILE, "r") as file:
+def read_lists() -> tuple[list, list]:
+    with open(INPUT_FILE) as file:
         list_1, list_2 = [], []
         # Read file to list variables
         for line in file:

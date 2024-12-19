@@ -23,7 +23,7 @@ PATTERNS = [
 
 def read_grid(file_path) -> list[str]:
     # Read the grid from the file
-    with open(file_path, "r") as file:
+    with open(file_path) as file:
         return [line.strip() for line in file]
 
 
