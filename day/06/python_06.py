@@ -1,5 +1,5 @@
 INPUT = "input.txt"
-# INPUT = "input_small.txt"
+# INPUT = "input_example.txt"
 
 UP = "^"
 RIGHT = ">"

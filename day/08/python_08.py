@@ -1,7 +1,7 @@
 from collections import defaultdict
 from itertools import combinations
 
-# INPUT = "input_small.txt"
+# INPUT = "input_example.txt"
 INPUT = "input.txt"
 
 

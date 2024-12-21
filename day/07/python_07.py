@@ -1,7 +1,7 @@
 from collections.abc import Generator
 
 INPUT = "input.txt"
-# INPUT = "input_small.txt"
+# INPUT = "input_example.txt"
 
 
 def get_input() -> Generator[tuple[int, list[int]]]:
