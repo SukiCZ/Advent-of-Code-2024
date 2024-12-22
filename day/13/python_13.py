@@ -9,7 +9,7 @@ A_TOKENS = 3
 B_TOKENS = 1
 
 
-def read_input() -> Generator[ClawMachine]:
+def read_input(shift: int = 0) -> Generator[ClawMachine]:
     """
     Read the input file and return a generator of ClawMachine objects
 
@@ -29,7 +29,7 @@ def read_input() -> Generator[ClawMachine]:
             _button, _b, x, y = button_b.split()
             b = Point(int(x[1:-1]), int(y[1:]))
             _prize, x, y = prize.split()
-            p = Point(int(x[2:-1]), int(y[2:]))
+            p = Point(int(x[2:-1]) + shift, int(y[2:]) + shift)
             yield ClawMachine(a, b, p)
 
 
@@ -75,19 +75,21 @@ class ClawMachine:
         if not a_times.is_integer() or not b_times.is_integer():
             return 0
 
-        # No more than 100 presses per button
-        if a_times > 100 or b_times > 100:
-            return 0
-
         return int(a_times * A_TOKENS + b_times * B_TOKENS)
 
 
 def main():
-    tokens = 0
+    tokens, shifted_tokens = 0, 0
     for machine in read_input():
         tokens += machine.solve()
 
     print(f"Tokens needed for game: {tokens}")  # 37128
+
+    # Part 2, the prize is shifted by 10000000000000 in both directions
+    for machine in read_input(shift=10000000000000):
+        shifted_tokens += machine.solve()
+
+    print(f"Tokens needed for game with shifted prize: {shifted_tokens}")  # 74914228471331
 
 
 if __name__ == "__main__":
