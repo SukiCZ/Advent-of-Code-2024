@@ -1,5 +1,5 @@
-# INPUT = "input_example_small.txt"  # 140
-# INPUT = "input_example.txt"  # 1930
+# INPUT = "input_example_small.txt"  # 140, 80
+# INPUT = "input_example.txt"  # 1930, 1206
 INPUT = "input.txt"
 
 
@@ -14,6 +14,12 @@ class Grid:
         self.width = len(grid[0])
         self.height = len(grid)
         self.directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+        self.corner_directions = [
+            (-1, -1),  # Up-Left
+            (1, -1),  # Up-Right
+            (-1, 1),  # Down-Left
+            (1, 1),  # Down-Right
+        ]
         self.visited = [[False for _ in range(self.width)] for _ in range(self.height)]
 
     def on_map(self, x: int, y: int) -> bool:
@@ -58,6 +64,25 @@ class Grid:
                     perimeter += 1
         return perimeter
 
+    def calculate_corners(self, region: set[tuple[int, int]]) -> int:
+        """
+        Calculate the corners of the region
+        """
+        corners = 0
+
+        for x, y in region:
+            for dx, dy in self.corner_directions:
+
+                # Inner corners
+                if (x + dx, y) in region and (x, y + dy) in region and (x + dx, y + dy) not in region:
+                    corners += 1
+
+                # Outer corners
+                if (x + dx, y) not in region and (x, y + dy) not in region:
+                    corners += 1
+
+        return corners
+
     def print(self):
         for row in self.grid:
             print(row)
@@ -67,16 +92,25 @@ class Grid:
 def main():
     grid = Grid(read_input())
     # grid.print()
-    fence_prices = 0
+    perimeter_price_sum, corner_price_sum = 0, 0
+
     for y in range(grid.height):
         for x in range(grid.width):
             if not grid.visited[y][x]:
                 region = grid.find_region(x, y)
                 perimeter = grid.calculate_perimeter(region)
-                fence_price = perimeter * len(region)
-                fence_prices += fence_price
-                # print(f"Price: {fence_price}, Region: {region}")
-    print(f"Total price: {fence_prices}")
+                corners = grid.calculate_corners(region)
+
+                perimeter_price = perimeter * len(region)
+                corner_price = corners * len(region)
+
+                perimeter_price_sum += perimeter_price
+                corner_price_sum += corner_price
+
+                # print(f"Perimeter price: {perimeter_price}, Corner price: {corner_price} Region: {region}")
+
+    print(f"Total perimeter price: {perimeter_price_sum}")
+    print(f"Total corner price: {corner_price_sum}")
 
 
 if __name__ == "__main__":
