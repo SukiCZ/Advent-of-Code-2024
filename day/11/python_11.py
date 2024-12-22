@@ -54,6 +54,9 @@ def main():
     stone_counts = transform(data, 25)
     print(f"Number of stones after 25 transformations: {sum(stone_counts.values())}")  # 193269
 
+    stone_counts = transform(data, 75)
+    print(f"Number of stones after 75 transformations: {sum(stone_counts.values())}")  # 228449040027793
+
 
 if __name__ == "__main__":
     main()
