@@ -46,6 +46,4 @@ if __name__ == "__main__":
     mul_calls = sum_multiplication_calls(lines)
     print(f"Sum of 'mul' calls: {mul_calls}")  # 164730528
     mul_calls_with_do_dont = part_two(lines)
-    print(
-        f"Sum of 'mul' calls with 'do()' and 'don't()': {mul_calls_with_do_dont}"
-    )  # 70478672
+    print(f"Sum of 'mul' calls with 'do()' and 'don't()': {mul_calls_with_do_dont}")  # 70478672

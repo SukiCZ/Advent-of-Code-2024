@@ -60,9 +60,7 @@ def validate_updates(
     return get_middle(left)
 
 
-def fix_update(
-    update: list[int], to_right: dict[int, list[int]], to_left: dict[int, list[int]]
-) -> int:
+def fix_update(update: list[int], to_right: dict[int, list[int]], to_left: dict[int, list[int]]) -> int:
     """
     Fix update in order to_right and to_left
     :param update: [3, 1, 5]

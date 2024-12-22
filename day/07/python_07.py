@@ -54,9 +54,7 @@ def can_solve(test_value: int, result: int, numbers: list[int], calibrate=False)
             can_solve(test_value, result + number, numbers.copy(), calibrate),
             can_solve(test_value, result * number, numbers.copy(), calibrate),
             (
-                can_solve(
-                    test_value, int(f"{result}{number}"), numbers.copy(), calibrate
-                )
+                can_solve(test_value, int(f"{result}{number}"), numbers.copy(), calibrate)
                 if calibrate
                 else False
             ),
@@ -74,9 +72,7 @@ def main():
     for test_value, numbers in get_input():
         if can_solve(test_value, 0, numbers, calibrate=True):
             test_values_with_calibration += test_value
-    print(
-        f"Sum of test values with calibration: {test_values_with_calibration}"
-    )  # 426214131924213
+    print(f"Sum of test values with calibration: {test_values_with_calibration}")  # 426214131924213
 
 
 if __name__ == "__main__":

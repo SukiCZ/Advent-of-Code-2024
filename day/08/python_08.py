@@ -40,9 +40,7 @@ class World:
     def __init__(self, data: list[str]):
         self.height: int = len(data)
         self.width: int = len(data[0])
-        self.grid: list[list[str]] = [
-            [EMPTY for _ in range(self.width)] for _ in range(self.height)
-        ]
+        self.grid: list[list[str]] = [[EMPTY for _ in range(self.width)] for _ in range(self.height)]
         self.antennas: dict[str, list[Location]] = defaultdict(list)
         self.antinodes: set[Location] = set()
 
@@ -60,9 +58,7 @@ class World:
         """
         return 0 <= location.x < self.height and 0 <= location.y < self.width
 
-    def add_antinodes(
-        self, location: Location, direction: Location, start: int = 1, stop: int = 2
-    ):
+    def add_antinodes(self, location: Location, direction: Location, start: int = 1, stop: int = 2):
         """
         Extend antinode positions in a direction (dx, dy)
 
@@ -95,12 +91,8 @@ class World:
         for antenna, locations in self.antennas.items():
             for loc_1, loc_2 in combinations(locations, 2):
                 dx, dy = loc_2.x - loc_1.x, loc_2.y - loc_1.y
-                self.add_antinodes(
-                    Location(loc_1.x, loc_1.y), Location(-dx, -dy), start, stop
-                )
-                self.add_antinodes(
-                    Location(loc_2.x, loc_2.y), Location(dx, dy), start, stop
-                )
+                self.add_antinodes(Location(loc_1.x, loc_1.y), Location(-dx, -dy), start, stop)
+                self.add_antinodes(Location(loc_2.x, loc_2.y), Location(dx, dy), start, stop)
 
     def print(self):
         """
