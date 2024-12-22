@@ -15,3 +15,6 @@ requires-python = ">=3.12"
 dev = [
     "pre-commit>=4.0.1"
 ]
+
+[tool.black]
+line-length = 110
