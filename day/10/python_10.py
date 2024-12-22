@@ -30,7 +30,7 @@ class Grid:
         """
         return [(x, y) for y in range(self.height) for x in range(self.width) if self.grid[y][x] == 0]
 
-    def get_neighbors(self, x, y, visited) -> list[tuple[int, int]]:
+    def get_neighbors(self, x, y, visited=None) -> list[tuple[int, int]]:
         """
         Get neighbors of a cell that applies
         """
@@ -38,11 +38,11 @@ class Grid:
             (x + dx, y + dy)
             for dx, dy in DIRECTIONS
             if self.on_map(x + dx, y + dy)  # On the map
-            and self.grid[y + dy][x + dx] == self.grid[y][x] + 1  # Next cell > current by 1
-            and not visited[y + dy][x + dx]  # Not visited
+            and self.grid[y + dy][x + dx] == self.grid[y][x] + 1  # Next cell == current + 1
+            and (visited is None or not visited[y + dy][x + dx])  # Not visited, if applicable
         ]
 
-    def analyze_path(self, x, y, visited=None) -> int:
+    def analyze_path(self, x: int, y: int, visited=None) -> int:
         """
         Analyze the path starting at x, y
         """
@@ -57,14 +57,26 @@ class Grid:
             self.analyze_path(dx, dy, visited=visited) for dx, dy in self.get_neighbors(x, y, visited=visited)
         )
 
+    def analyze_rating(self, x: int, y: int) -> int:
+        """
+        Analyze the path ratings starting at x, y
+        """
+        current = self.grid[y][x]
+        if current == 9:
+            return 1
+
+        return sum(self.analyze_rating(dx, dy) for dx, dy in self.get_neighbors(x, y))
+
 
 def main():
-    score = 0
+    score, rating = 0, 0
     data = read_input()
     grid = Grid(data)
     for x, y in grid.get_trailheads_start():
         score += grid.analyze_path(x, y)
+        rating += grid.analyze_rating(x, y)
     print(f"Summary of path score is: {score}")  # 646
+    print(f"Summary of path rating is: {rating}")  # 23364
 
 
 if __name__ == "__main__":
