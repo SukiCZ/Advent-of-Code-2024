@@ -1,4 +1,4 @@
-from functools import cache
+from collections import Counter
 
 # INPUT = "input_example.txt"
 INPUT = "input.txt"
@@ -14,8 +14,7 @@ def read_input() -> list[int]:
         return [int(char) for char in file.readline().split()]
 
 
-@cache
-def transform_stone(stone: int) -> list[int]:
+def transform_stones(counter: Counter) -> Counter:
     """
     Transformation rules:
 
@@ -23,31 +22,37 @@ def transform_stone(stone: int) -> list[int]:
     If stone has even numbers of digits, split in two (`1000` -> (`10`, `0`))
     Otherwise multiply by 2024 (`100` -> `202400`)
     """
-    if stone == 0:
-        return [1]
-    if len(str(stone)) % 2 == 0:
-        s = str(stone)  # Convert to string
-        idx_half = len(str(stone)) // 2  # Get half index
-        first, second = s[:idx_half], s[idx_half:]  # Split in two
-        return [int(first), int(second)]  # Convert back to integer
-    return [stone * MULTIPLY_BY]
+    new_counter: Counter[int] = Counter()
+
+    for stone, count in counter.items():
+        if stone == 0:
+            new_counter[1] += count
+        elif len(str(stone)) % 2 == 0:
+            s = str(stone)  # Convert to string
+            idx_half = len(str(stone)) // 2  # Get half index
+            first, second = s[:idx_half], s[idx_half:]  # Split in two
+            new_counter[int(first)] += count
+            new_counter[int(second)] += count
+        else:
+            new_counter[stone * MULTIPLY_BY] += count
+
+    return new_counter
 
 
-def transform(data: list[int]) -> list[int]:
+def transform(data: list[int], iterations: int) -> Counter:
     """
     For each stone, check transformation rules
     """
-    result: list[int] = []
-    for stone in data:
-        result.extend(transform_stone(stone))
-    return result
+    counter: Counter[int] = Counter(data)
+    for _ in range(iterations):
+        counter = transform_stones(counter)
+    return counter
 
 
 def main():
     data = read_input()
-    for _ in range(25):
-        data = transform(data)
-    print(f"Number of stones after 25 transformations: {len(data)}")
+    stone_counts = transform(data, 25)
+    print(f"Number of stones after 25 transformations: {sum(stone_counts.values())}")  # 193269
 
 
 if __name__ == "__main__":
