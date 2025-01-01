@@ -1,10 +1,10 @@
 import heapq
-from collections import defaultdict
+from collections import defaultdict, deque
 from dataclasses import dataclass
 
-INPUT = "input.txt"
-# INPUT = "input_example.txt"  # 11048
-# INPUT = "input_example_small.txt"  # 7036
+INPUT = "input.txt"  # 65436, 489
+# INPUT = "input_example.txt"  # 11048, 64
+# INPUT = "input_example_small.txt"  # 7036, 45
 
 DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # right, down, left, up
 
@@ -25,6 +25,9 @@ class Point:
 
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
 
     def __repr__(self):
         return f"Point({self.x}, {self.y})"
@@ -49,6 +52,7 @@ class Maze:
                     self.end = Point(i, j)
         self.direction = 0  # right
         self.visited: dict[tuple[Point, int], float] = defaultdict(float_inf)  # (position, direction) -> cost
+        self.visited[(self.start, self.direction)] = 0
 
     def on_map(self, position: Point) -> bool:
         return 0 <= position.x < self.height and 0 <= position.y < self.width
@@ -91,12 +95,54 @@ class Maze:
 
         return int(min(self.visited[(self.end, direction)] for direction in range(4)))
 
+    def backtrack(self, min_cost: int) -> int:
+        """
+        Backtrack the shortest path
+        :param min_cost: Cost of the shortest path
+        :return: Count of unique tiles in the shortest path
+        """
+        shortest_path: set[tuple[Point, int]] = set()  # set of shortest path tiles
+        q: deque[tuple[Point, int]] = deque()  # queue for backtracking
+
+        for d in range(4):
+            # Add all end state with the minimum cost
+            if self.visited[(self.end, d)] == min_cost:
+                shortest_path.add((self.end, d))
+                q.append((self.end, d))
+
+        while q:
+            position, direction = q.popleft()
+            current_cost = self.visited[(position, direction)]
+
+            # Backtrack moves
+            dx, dy = DIRECTIONS[direction]
+            new_position = position - Point(dx, dy)
+            if self.is_valid(new_position):
+                new_state = (new_position, direction)
+                if 0 <= current_cost - 1 == self.visited[new_state]:
+                    if new_state not in shortest_path:
+                        shortest_path.add(new_state)
+                        q.append(new_state)
+
+            # Backtrack rotations
+            if current_cost >= 1000:
+                for new_direction in [(direction + 1) % 4, (direction - 1) % 4]:
+                    new_state = (position, new_direction)
+                    if self.visited[new_state] == current_cost - 1000:
+                        if new_state not in shortest_path:
+                            shortest_path.add(new_state)
+                            q.append(new_state)
+
+        return len({p for (p, d) in shortest_path})
+
 
 def main():
     data = read_input()
     maze = Maze(data)
     # print(maze.data)
-    print(f"Solution to part 1: {maze.dijkstra()}")  # 65436
+    min_cost = maze.dijkstra()
+    print(f"Shortest path cost: {min_cost}")  # 65436
+    print(f"Unique tiles in the shortest path: {maze.backtrack(min_cost)}")  # 489
 
 
 if __name__ == "__main__":
