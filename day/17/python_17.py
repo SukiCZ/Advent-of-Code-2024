@@ -1,7 +1,6 @@
 import re
 
 INPUT = "input.txt"
-# INPUT = "input_example.txt"
 
 
 def read_input() -> tuple[list[int], list[int]]:
@@ -59,12 +58,41 @@ class Program:
 
         return result
 
+    def find_a_register_value(self, program: list[int]) -> int:
+        """
+        Get a value of `A` register to find output being a copy of itself
+        :param program: Program to run. A set of pairs of optcode and operand
+        :return: Value of `A` that will halt the program
+        """
+        results: list[int] = []
+        # Start from end of the program
+        todos: list[tuple[int, int]] = [(len(program) - 1, 0)]
+        for position, value in todos:
+            # Try all values from 0 to 7
+            for a in range(value * 8, (value + 1) * 8):
+                # Create a new program with the new value of `A`
+                p = Program([a, self.B, self.C])
+                # Execute the program from the given position
+                if p.execute(program) == program[position:]:
+                    # If the output is the same as the remaining program
+                    if position == 0:
+                        # If we are at the beginning of the program, add the value to the results
+                        results.append(a)
+                    else:
+                        # Otherwise, add the new position and value to the todos
+                        todos.append((position - 1, a))
+
+        return min(results)
+
 
 def main():
     registers, program = read_input()
     p = Program(registers)
     result = p.execute(program)
-    print(f"The result is {','.join(map(str, result))}")
+    print(f"The result of program: {','.join(map(str, result))}")
+
+    a = p.find_a_register_value(program)
+    print(f"The value of `A` for program copy: {a}")
 
 
 if __name__ == "__main__":
