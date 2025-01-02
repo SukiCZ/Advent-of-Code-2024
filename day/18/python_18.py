@@ -68,6 +68,16 @@ class Maze:
         self.visited: dict[Point, float] = defaultdict(float_inf)  # (position, direction) -> cost
         self.visited[self.start] = 0
 
+    def add_byte(self, position: Point):
+        """
+        Add a byte to the memory space
+        :param position: Position to add the byte
+        """
+        self.memory_space.append(position)
+        # Reset the visited map
+        self.visited = defaultdict(float_inf)  # (position, direction) -> cost
+        self.visited[self.start] = 0
+
     def on_map(self, position: Point) -> bool:
         """
         Check if the position is on the map
@@ -110,7 +120,10 @@ class Maze:
                         self.visited[new_position] = new_cost
                         heapq.heappush(pq, (new_cost, new_position))
 
-        return int(self.visited[self.end])
+        if not self.visited[self.end].is_integer():
+            return None
+        else:
+            return int(self.visited[self.end])
 
     def print(self):
         """
@@ -134,6 +147,16 @@ def main():
     maze.print()
     steps = maze.dijkstra()
     print(f"Steps to exit the maze: {steps}")
+    for byte in memory_space[N_STEPS : int(N_STEPS * 2.8)]:
+        maze.add_byte(byte)
+    for byte in memory_space[int(2.8 * N_STEPS) :]:
+        maze.add_byte(byte)
+        steps = maze.dijkstra()
+        if steps is not None:
+            continue
+        print(f"Byte at position `{byte.y},{byte.x}` is blocking the exit")
+        # maze.print()
+        break
 
 
 if __name__ == "__main__":
