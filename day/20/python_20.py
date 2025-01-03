@@ -1,6 +1,7 @@
 import heapq
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass
+from itertools import product
 
 INPUT = "input.txt"
 
@@ -88,37 +89,40 @@ class Maze:
         else:
             return int(self.visited[self.end])
 
-    def find_cheating_paths(self, threshold: int) -> int:
+    def find_cheating_paths(self, threshold: int, radius: int = 2) -> int:
         """
         Find all cheating paths
 
         :param threshold: The threshold for the difference between the max and min neighbor
+        :param radius: The radius of a cheat to check
         """
-        counter = 0
+        counter: Counter[int] = Counter()
 
         for x in range(1, self.height - 1):
             for y in range(1, self.width - 1):
-                # Create a list of neighbors
-                neighbors: list[float | int] = []
 
                 # Check if the point is a wall
-                if self.data[x][y] == "#":
+                if self.data[x][y] != "#":
                     point = Point(x, y)
-                    # For all directions
-                    for dx, dy in DIRECTIONS:
+                    # For radius in all directions
+                    for dx, dy in product(range(-radius, radius + 1), repeat=2):
+                        # Skip the point itself
+                        if (dx, dy) == (0, 0):
+                            continue
+                        # Calculate the steps to the neighbor
+                        steps = abs(dx) + abs(dy)
+                        # Skip if the steps are greater than the radius
+                        if steps > radius:
+                            continue
                         # Check if the neighbor is visited
                         new_point = point + Point(dx, dy)
                         if self.visited[new_point].is_integer():
-                            neighbors.append(self.visited[new_point])
+                            # Calculate the difference between the max and min neighbor
+                            diff = self.visited[new_point] - self.visited[point] - steps
+                            if diff >= threshold:
+                                counter[int(diff)] += 1
 
-                    # If there are more than one neighbor
-                    if len(neighbors) > 1:
-                        # Calculate the difference between the max and min neighbor
-                        diff = max(neighbors) - min(neighbors) - 2
-                        if diff >= threshold:
-                            counter += 1
-
-        return counter
+        return sum(counter.values())
 
     def print(self):
         """
@@ -142,7 +146,9 @@ def main():
     maze.dijkstra()
     # maze.print()
     cheats = maze.find_cheating_paths(threshold=100)
-    print(f"Cheating paths: {cheats}")
+    print(f"Cheating paths: {cheats} with threshold 100 and radius 2")
+    cheats = maze.find_cheating_paths(threshold=100, radius=20)
+    print(f"Cheating paths: {cheats} with threshold 100 and radius 20")
 
 
 if __name__ == "__main__":
